@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'webApp';
+  title = 'Web App as Microservice';
+  welcomeMsg = "Welcome to Web App as microservice";
 }
