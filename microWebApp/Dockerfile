@@ -1,5 +1,5 @@
 # ----------------------------#
-#	        UI BUILD#           #
+#         UI BUILD            #
 # ----------------------------#
 FROM node:12-alpine as webappbuild
 
