@@ -1,5 +1,5 @@
 # ----------------------------#
-#					UI BUILD 						#
+#	        UI BUILD#           #
 # ----------------------------#
 FROM node:12-alpine as webappbuild
 
@@ -18,7 +18,7 @@ COPY ./webApp /webapp/
 RUN ng build --prod --delete-output-path --output-path=/webapp/dist
 
 # ----------------------------#
-#					JAVA BUILD 					#
+#        JAVA BUILD           #
 # ----------------------------#
 FROM maven:3.6-jdk-12 as webappserverbuild
 
