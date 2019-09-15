@@ -1,2 +1,4 @@
+.idea
+.eclipse
 target
 **/node_modules
