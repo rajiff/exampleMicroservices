@@ -34,9 +34,28 @@ RUN mvn dependency:go-offline
 # Now copy actual source, i.e., this line should be after downloading dependencies to avoid repeated download when src changes
 COPY ./src /webappserver/src
 
+# Now copy webapp (webclient) distribution for packaging with JAR
+COPY --from=webappbuild /webapp/dist/* /webappserver/main/static/
+
 # Build now
 RUN mvn clean package -DskipTests=true
 
-COPY --from=webappbuild /webapp/dist/* /webappserver/main/static/
+# If you choose to test it in a debug mode, this will be the end of Dockerfile
+# ENTRYPOINT ["mvn", "spring-boot:run"]
 
-ENTRYPOINT ["mvn", "spring-boot:run"]
+# ----------------------------#
+#        JAVA Service         #
+# ----------------------------#
+FROM maven:3.6-jdk-12
+
+# name this basis the micro service name
+RUN mkdir /webappserver
+
+WORKDIR /webappserver
+
+# Copy the built service jars and resources
+COPY --from=webappserverbuild /webappserver/target /webappserver/target
+
+RUN ls -ltr /webappserver/
+
+ENTRYPOINT ["java", "-jar", "target/ex-ms-webappserver-1.0.0.jar"]
