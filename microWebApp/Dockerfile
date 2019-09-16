@@ -3,8 +3,6 @@
 # ----------------------------#
 FROM node:12-alpine as webappbuild
 
-RUN npm install -g @angular/cli
-
 RUN mkdir /webapp
 
 WORKDIR /webapp
@@ -15,7 +13,9 @@ RUN npm install
 
 COPY ./webApp /webapp/
 
-RUN ng build --prod --delete-output-path --output-path=/webapp/dist
+RUN npm run build -- --prod --delete-output-path --output-path=/webapp/dist
+
+RUN ls -ltr /webapp/dist
 
 # ----------------------------#
 #        JAVA BUILD           #
@@ -34,8 +34,14 @@ RUN mvn dependency:go-offline
 # Now copy actual source, i.e., this line should be after downloading dependencies to avoid repeated download when src changes
 COPY ./src /webappserver/src
 
+RUN rm -rf /webappserver/src/main/resources/static
+
+RUN mkdir -p /webappserver/src/main/resources/static
+
 # Now copy webapp (webclient) distribution for packaging with JAR
-COPY --from=webappbuild /webapp/dist/* /webappserver/main/static/
+COPY --from=webappbuild /webapp/dist/* /webappserver/src/main/resources/static/
+
+RUN ls -ltr /webappserver/src/main/resources/static/
 
 # Build now
 RUN mvn clean package -DskipTests=true
